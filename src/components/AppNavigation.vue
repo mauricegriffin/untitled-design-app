@@ -1,6 +1,6 @@
 <template>
     <span>
-        <v-navigation-drawer app v-model="drawer" class="brown lighten-2" dark disable-resize-watcher>
+        <v-navigation-drawer app v-model="drawer" disable-resize-watcher>
             <!-- <v-list>
                 <template v-for="(item, index) in items">
                     <v-list-tile :key="index">
@@ -11,17 +11,42 @@
                     <v-divider :key="`divider-${index}`"></v-divider>
                 </template>
             </v-list> -->
+            <v-list>
+                <v-list-tile to="/news">
+                    <v-list-tile-content>
+                        News
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile to="/photos">
+                    <v-list-tile-content>
+                        Photos
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile to="/colors">
+                    <v-list-tile-content>
+                        Colors
+                    </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile to="/">
+                    <v-list-tile-content>
+                        Sign Out
+                    </v-list-tile-content>
+                </v-list-tile>
+            </v-list>
         </v-navigation-drawer>
-        <v-toolbar app color="brown darken-4" dark>
+        <v-toolbar>
             <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
             <v-spacer class="hidden-md-and-up"></v-spacer>
             <router-link to="/">
-                <v-toolbar-title to="/">{{appTitle}}</v-toolbar-title>
+                <v-toolbar-title to="/">{{this.$store.state.appTitle}}</v-toolbar-title>
             </router-link>
-            <v-btn flat class="hidden-sm-and-down" to="/menu">Menu</v-btn>
+            <v-btn flat class="hidden-sm-and-down" to="/news">News</v-btn>
+            <v-btn flat class="hidden-sm-and-down" to="/photos">Photos</v-btn>
+            <v-btn flat class="hidden-sm-and-down" to="/colors">Colors</v-btn>
             <v-spacer class="hidden-sm-and-down"></v-spacer>
-            <v-btn flat class="hidden-sm-and-down" to="/sign-in">SIGN IN</v-btn>
-            <v-btn color="brown lighten-3" class="hidden-sm-and-down" to="/join">JOIN</v-btn>
+            <v-btn flat class="hidden-sm-and-down" to="/sign-in">Sign In</v-btn>
+            <v-btn flat class="hidden-sm-and-down" to="/join">Sign Up</v-btn>
+            <v-btn flat class="hidden-sm-and-down" to="/">Sign Out</v-btn>
         </v-toolbar>
     </span>
 </template>
@@ -30,13 +55,7 @@ export default {
     name: 'AppNavigation',
     data() {
         return {
-            appTitle: 'Untitled',
-            drawer: false,
-            items: [
-                { title: 'News' },
-                { title: 'Sign In' },
-                { title: 'Join' }
-            ]
+            drawer: false
         };
     }
 };

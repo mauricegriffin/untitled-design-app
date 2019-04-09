@@ -29,6 +29,21 @@ export default new Router({
       path: '/join',
       name: 'join',
       component: () => import(/* webpackChunkName: "login" */ './views/Join.vue')
+    },
+    {
+      path: '/news',
+      name: 'news',
+      component: () => import(/* webpackChunkName: "news" */ './views/NewsFeed.vue')
+    },
+    {
+      path: '/photos',
+      name: 'photos',
+      component: () => import(/* webpackChunkName: "photos" */ './views/Photos.vue')
+    },
+    {
+      path: '/colors',
+      name: 'colors',
+      component: () => import(/* webpackChunkName: "colors" */ './views/Colors.vue')
     }
   ]
 })
