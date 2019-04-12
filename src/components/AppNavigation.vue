@@ -44,7 +44,7 @@
             <v-btn flat class="hidden-sm-and-down" to="/photos">Photos</v-btn>
             <v-btn flat class="hidden-sm-and-down" to="/colors">Colors</v-btn>
             <v-spacer class="hidden-sm-and-down"></v-spacer>
-            <v-btn flat class="hidden-sm-and-down" to="/sign-in">Sign In</v-btn>
+            <v-btn flat class="hidden-sm-and-down" to="/login">Sign In</v-btn>
             <v-btn flat class="hidden-sm-and-down" to="/join">Sign Up</v-btn>
             <v-btn flat class="hidden-sm-and-down" to="/">Sign Out</v-btn>
         </v-toolbar>

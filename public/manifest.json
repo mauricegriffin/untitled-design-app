@@ -1,6 +1,6 @@
 {
-  "name": "untitled",
-  "short_name": "untitled",
+  "name": "untitled: design helper app",
+  "short_name": "_untitled_app",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
