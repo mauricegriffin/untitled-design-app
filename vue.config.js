@@ -23,14 +23,14 @@ module.exports = {
       preProcessor: "scss",
       patterns: [path.resolve(__dirname, "./src/styles/_settings.scss")]
     }
-  },
+  }
 
   // css: {
   //   extract: false
   // },
 
-  pwa: {
-    name: 'Untitled: Web Design Inspiration',
-    themeColor: '#571018'
-  }
+  // pwa: {
+  //   name: 'Untitled: Web Design Inspiration',
+  //   themeColor: '#571018'
+  // }
 }
