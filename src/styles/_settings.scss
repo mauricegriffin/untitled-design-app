@@ -28,6 +28,16 @@ $dust: #a0a083;
 $teal: #3b7080;
 $coral: #FF715B;
 
+$sans: 'Roboto', sans-serif;
+$narrow: 'Roboto Condensed', sans-serif;
+$serif: 'Roboto Slab', serif;
+
+$background: darken($greyBrown, 18%);
+.theme--dark.application {
+  background: $background;
+  color: #fff;
+}
+
 // <style scoped>
 //   .something {
 //     color: var(--v-primary-base)
