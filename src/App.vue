@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app dark>
     <AppNavigation v-if="!['home'].includes($route.name)"></AppNavigation>
     <v-content>
       <router-view/>

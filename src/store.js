@@ -9,7 +9,13 @@ export default new Vuex.Store({
     corsProxy: 'https://cors-anywhere.herokuapp.com/', //cors.io //
     defaultRSSFeeds: [
       'http://feeds.feedburner.com/webdesignerdepot/?format=xml',
-      'https://thenextweb.com/dd/feed/'
+      'https://thenextweb.com/dd/feed/',
+      'https://www.smashingmagazine.com/feed',
+      'https://webdesign.tutsplus.com/posts',
+      'http://www.awwwards.com/blog/feed',
+      'http://www.creativebloq.com/feed',
+      'http://www.hongkiat.com/blog/category/design/feed/',
+      'http://feeds.feedburner.com/tympanus'
     ],
     rssFeedResults: []
   },

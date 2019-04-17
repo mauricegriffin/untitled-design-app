@@ -34,7 +34,7 @@
                 </v-list-tile>
             </v-list>
         </v-navigation-drawer>
-        <v-toolbar>
+        <v-toolbar class="primary">
             <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
             <v-spacer class="hidden-md-and-up"></v-spacer>
             <router-link to="/">
@@ -60,5 +60,17 @@ export default {
     }
 };
 </script>
-<style scoped>
+
+<style lang="scss">
+    .v-toolbar__content {
+        a {
+        color: white;
+        text-decoration: none;
+        }
+    }
+    .v-list__tile--active {
+        .v-list__tile__content {
+            color: $accent;
+        }
+    }
 </style>
