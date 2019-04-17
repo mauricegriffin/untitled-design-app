@@ -1,43 +1,24 @@
 <template>
-    <v-container fluid grid-list-lg class="newsfeed">
-        <v-layout v-if="loading">
+    <main class="news">
+        <!-- <v-container fluid grid-list-lg class="newsfeed"> -->
+        <template v-if="loading">
             Loading
-        </v-layout>
-        <v-layout row wrap v-if="!loading">
-            <v-flex xs12 v-for="(item, index) in orderedRss">
-                <v-card :class="'rss-card-'+index">
-                    <!-- <v-layout row wrap> -->
-                            <v-card-title class="error darken-2 article_title">
-
-                                <h1 class="headline">
-                                    {{item.title}}
-                                </h1>
-                                <p class="caption">
-                                    {{item.source}} / {{item.postAge}} <template v-if="item.creator">by {{item.creator}}</template>
-                                </p>
-                                <!-- <p class="caption" style="float:right;">
-                                    {{item.creator}}
-                                </p> -->
-                            </v-card-title>
-                            <v-card-text>
-                                <v-img v-if="item.img" :src="item.img" alt="" class="article_img"></v-img>
-                                <p v-html="item.contentSnippet"></p>
-                            </v-card-text>
-                            <!-- <v-layout row> -->
-                                <!-- <v-flex xs5> -->
-                                     <!-- v-if="item.img"> -->
-                                <!-- </v-flex> -->
-                                <!-- <v-flex xs7> -->
-                                    <v-card-text></v-card-text>
-                                <!-- </v-flex> -->
-                            <!-- </v-layout> -->
-                        <v-card-actions>
-                        </v-card-actions>
-                    <!-- </v-layout> -->
-                </v-card>
-            </v-flex>
-        </v-layout>
-    </v-container>
+        </template>
+        <template row wrap v-if="!loading">
+            <article v-for="(item, index) in orderedRss" v-bind:key="item.link">
+                <header>
+                    {{item.title}}
+                </header>
+                <p class="snippet" v-html="item.contentSnippet"></p>
+                <v-img class="article-img" v-if="item.img" :src="item.img" alt=""></v-img>
+                <!-- <aside>
+                </aside> -->
+                <footer>
+                    {{item.source}} / {{item.postAge}} <template v-if="item.creator">by {{item.creator}}</template>
+                </footer>
+            </article>
+        </template>
+    </main>
 </template>
 
 <script>
@@ -131,27 +112,30 @@ export default {
 </script>
 
 <style lang="scss">
-.newsfeed {
-    background-color: #000;
-}
-.v-card__title {
-    // font-weight: bold;
+// COPIED FOR REFERENCE
+$tan: #f6d8ae;
+$greyBrown: #5a5353;
+$avocado: #ade25d;
+$dust: #a0a083;
+$teal: #3b7080;
+// ----------------
 
-    h1 {
+.news {
+    article {
+        background-color: $tan;
     }
-}
-.v-card__text {
-    // img {
-    //     max-width: 100%;
-    //     height: auto;
-    // }
-}
-.v-card__actions {
-    // background-color: darken($error,10);
-}
-.article_img {
-    img {
-        max-width: 100%;
+    header {
+        // background-color:  var(--v-secondary-base);
+        background-color: $greyBrown;
+    }
+    .snippet {
+
+    }
+    footer {
+
+    }
+    .article-img {
+
     }
 }
 </style>

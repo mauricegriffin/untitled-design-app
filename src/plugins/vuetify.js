@@ -7,13 +7,14 @@ import VueMoment from 'vue-moment';
 Vue.use(
   Vuetify, {
     theme: {
-      primary: '#283f3b',
-      secondary: '#3b7080',
-      accent: '#e4572e',
+      primary: '#3b7080', //teal
+      secondary: '#5a5353', //greyBrown
+      accent: '#ade25d', //avocado
       error: '#461220',
-      info: '#f6d8ae',
-      success: '#ade25d',
-      warning: '#4b3b40'
+      info: '#f6d8ae', //tan
+      success: '#a0a083', //dust
+      warning: '#FF715B', //coral
+      teal: '#3b7080' //teal
     },
     options: {
       customProperties: true
