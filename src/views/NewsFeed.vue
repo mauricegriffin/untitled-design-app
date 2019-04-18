@@ -135,18 +135,21 @@ $blackish: #1E1C1C;
         // background-color: lighten($dust,20%);
         color: $blackish;
         color: #fff;
-        margin-bottom: 1em;
-        clear:both;
-        // display: grid;
-        // grid-template-columns: 40px 50px auto 50px 40px;
-        // grid-template-rows: auto auto auto;
+        margin-bottom: 2rem;
+        // clear:both;
+        display: grid;
+        grid-template-columns: 25% auto;
+        grid-template-rows: auto auto auto;
     }
     header {
         // background-color:  var(--v-secondary-base);
         // background-color: $greyBrown;
+        grid-row: 1;
+        grid-column: 1 / -1;
         font-size: 1.5rem;
         line-height: 1.75rem;
         font-family: $narrow;
+        margin-bottom: 0.5rem;
                         // border-bottom: 1px solid $avocado;
 
         color: $avocado;
@@ -165,7 +168,7 @@ $blackish: #1E1C1C;
         // color: $blackish;
         // clear: both;
         font-size: .8rem;
-        clear: both;
+        // clear: both;
         color: $avocado;
     }
     .has-image {
@@ -173,46 +176,32 @@ $blackish: #1E1C1C;
             // padding-left: 1rem;
             // margin-left: 1rem;
         }
+        .snippet {
+            line-height: 1.4rem;
+            // padding-top: 0;
+            padding-left: 1rem;
+        }
+
     }
     .article-img {
-        float: left;
-        margin-right: 1rem;
-
-        // width: 25%;
-        // max-width: 25%;
-        // height: 100%;
+        grid-column: 1 / 2;
+        grid-row: 2 / -1;
+        // margin-right: 0.5em;
+        // float: left;
+        // margin-right: 1rem;
         img {
-            // width: 25%;
-            height: 9rem;
-            width: 9rem;
             max-width: 100%;
-            object-fit: cover;
+            // object-fit: cover;
         }
-        // width: 100%;
-        // max-width: 25%;
     }   
-    /* styles for '...' */ 
     .snippet {
-
-// padding-bottom: 5rem;
-        padding-top: 0.5rem;
+        // padding-top: 0.5rem;
         margin-bottom: 0;
-    /* hide text if it more than N lines  */
-    overflow: hidden;
-    /* for set '...' in absolute position */
-    position: relative; 
-    /* use this value to count block height */
-    line-height: 1.2em;
-    /* max-height = line-height (1.2) * lines max number (3) */
-    // max-height: 4.8em;
-    max-height: 5.6rem;
-    /* fix problem when last visible word doesn't adjoin right side  */
-    // text-align: justify;  
-    /* place for '...' */
-    // margin-right: -1em;
-    // padding-right: 1em;
+        overflow: hidden;
+        position: relative; 
+        // line-height: 1.2em;
+        // max-height: 5.6rem;
     }
-    /* create the ... */
     .snippet:before {
         content:'';
         width:100%;
