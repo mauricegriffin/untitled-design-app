@@ -1,52 +1,64 @@
 <template>
   <main class="home-page">
-    <!-- <div class="color-bands"> -->
     <div class="cb cband1" v-bind:style="{ backgroundColor: '#' + colors[0] }"></div>
     <div class="cb cband2" v-bind:style="{ backgroundColor: '#' + colors[1] }"></div>
     <div class="cb cband3" v-bind:style="{ backgroundColor: '#' + colors[2] }"></div>
     <div class="cb cband4" v-bind:style="{ backgroundColor: '#' + colors[3] }"></div>
-    <!-- <div class="home-container"> -->
-    <h1 class="app-title" v-bind:style="{ color: '#' + colors[4] }">
-      Untitled Design App
 
+<!-- filter: drop-shadow(30px 10px 0); -->
+        <!-- textShadow: '-1px -1px 0 rgba(0,0,0,0.1),1px -1px 0 rgba(0,0,0,0.1),-1px 1px 0 rgba(0,0,0,0.1),1px 1px 0 rgba(0,0,0,0.1)', -->
+
+    <h1 class="app-title" 
+      v-bind:style="{ 
+        color: '#' + colors[4]
+      }"
+    >
+    <!-- , 
+        filter: 'drop-shadow(3px -3px 0 #'+colors[2]+')' -->
+      Untitled Design App
     </h1>
+
     <div class="home-btns">
       <a @click="switchImage" class="refresh-palettes">
-        <v-icon v-bind:style="{ color: '#' + colors[4] }">
+          <!-- text-shadow:  -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000; -->
+        <v-icon 
+          v-bind:style="{
+            color: '#' + colors[4]
+          }"
+        >
+        <!-- , 
+            textShadow: 
+              '-1px 1px 0 #'+colors[2]+
+              ', 1px -1px 0 #'+colors[2]+
+              ', -1px -1px 0 #'+colors[2]+
+              ',1px 1px 0 #'+colors[2] -->
+            <!-- filter: 'drop-shadow(-3px 3px 0 #'+colors[3]+')' -->
+
           refresh
         </v-icon>
       </a>
     </div>
-    <router-link to="/login" class="start-btn" v-bind:style="{ color: '#' + colors[0], borderColor: '#' + colors[0] }">
+    <router-link 
+      to="/login" 
+      class="start-btn" 
+      v-bind:style="{
+        color: '#' + colors[0]
+      }"
+    >
+<!-- 
+    ,
+        borderColor: '#' + colors[0],
+        textShadow: 
+          '-1px 1px 0 #'+colors[4]+
+          ', 1px -1px 0 #'+colors[4]+
+          ', -1px -1px 0 #'+colors[4]+
+          ',1px 1px 0 #'+colors[4]
+           -->
       START
     </router-link>
-
-    <!-- <svg id="home-bg">
-      <filter id="dilate" width="100%" height="100%">
-        <feMorphology operator="dilate" radius="0">
-          <animate  attributeName="radius" from="0" to="40" dur="1s" repeatCount="1" ref="disintegrateFilter" />
-          <animate attributeName="radius" from="40" to="0" dur="1s" repeatCount="1" ref="reintegrateFilter"/>
-        </feMorphology>
-        <feColorMatrix type="matrix" values=".33 .33 .33 0 0
-                .33 .33 .33 0 0
-                .33 .33 .33 0 0
-                 0   0   0  1 0">
-        </feColorMatrix>
-      </filter>
-      <image class="home-bg-img homeBg1" v-show="bg1" key="bg1Key" filter="url(#dilate)" preserveAspectRatio="xMinYMin slice"
-        xlink:href="http://unsplash.it/1900/1900/?random&featured" width="200%" height="200%" transform="scale(2)"
-        ref="imgBg">
-        <animateTransform attributeName="transform" type="translate" from="0 0" to="-100 -100" begin="0s" dur="15s"
-          repeatCount="indefinite" />
-      </image>
-      <image class="home-bg-img homeBg2" v-show="bg2" key="bg2Key" filter="url(#dilate)" preserveAspectRatio="xMinYMin slice"
-        xlink:href="http://unsplash.it/1900/1900/?random&featured&cb=2" width="200%" height="200%" transform="scale(2)"
-        ref="imgBg">
-        <animateTransform attributeName="transform" type="translate" from="-100 -100" to="0 0" begin="0s" dur="15s"
-          repeatCount="indefinite" />
-      </image>
-    </svg> -->
-
   </main>
 </template>
 
@@ -65,8 +77,7 @@ export default {
   },
   methods: {
     mixColors: function() {
-      var item =
-        colorpallettes[Math.floor(Math.random() * colorpallettes.length)];
+      var item = colorpallettes[Math.floor(Math.random() * colorpallettes.length)];
       this.colors = item.colors;
     },
     switchImage: function() {
@@ -106,6 +117,7 @@ export default {
 
 <style lang="scss" scoped>
 .home-page {
+
   display: grid;
   grid-template-columns: 20% 20% 20% 20% 20%;
   grid-template-rows: 25vh 25vh 25vh 25vh;
@@ -136,6 +148,7 @@ $colorTransition: 3s ease;
 
 
 .cb {
+  // mix-blend-mode: difference;
   opacity: 0.5;
   // grid-auto-rows: auto;
   transition: background-color $colorTransition;
@@ -168,7 +181,8 @@ $colorTransition: 3s ease;
   grid-row-start: 1;
   grid-row-end: 4;
 
-  mix-blend-mode: difference;
+  // mix-blend-mode: difference;
+  // filter: drop-shadow(30px 10px 0);
 
 
   text-align: right;
@@ -188,7 +202,7 @@ $colorTransition: 3s ease;
 .start-btn {
   align-self: center;
   // background-blend-mode: darken;
-  mix-blend-mode: difference;
+  // mix-blend-mode: difference;
 
   font-size: 40px;
   line-height: 40px;
@@ -203,28 +217,13 @@ $colorTransition: 3s ease;
   z-index: 9;
 }
 
-@keyframes wiggle {
-  0% {
-    transform: rotate(-2deg);
-  }
-  1% {
-    transform: rotate(2deg);
-  }
-  2% {
-    transform: rotate(-2deg);
-  }
-  3% {
-    transform: rotate(0deg);
-  }
-  97% {
-    transform: rotate(2deg)
-  }
-  99% {
-    transform: rotate(-2deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
+@keyframes rotation {
+		from {
+				-webkit-transform: rotate(0deg);
+		}
+		to {
+				-webkit-transform: rotate(359deg);
+		}
 }
 
 .home-btns {
@@ -233,14 +232,15 @@ $colorTransition: 3s ease;
   grid-column-start: 5;
   text-align: right;
   z-index: 9;
-  mix-blend-mode: difference;
+  // mix-blend-mode: difference;
 
   .refresh-palettes {
     .v-icon {
-      font-size: 50px;
+      font-size: 80px;
+      transition: transform 0.3 ease;
       transition: color $colorTransition;
       // mix-blend-mode: difference;
-      animation: wiggle 10s infinite; 
+      animation: rotation 7s infinite linear; 
       // alternate;
 
     }

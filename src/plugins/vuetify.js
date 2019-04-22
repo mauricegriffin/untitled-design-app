@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
 import 'vuetify/src/stylus/app.styl';
-import VueLodash from 'vue-lodash';
 import VueMoment from 'vue-moment';
 
 Vue.use(
@@ -21,6 +20,5 @@ Vue.use(
     },
     iconfont: 'md',
   },
-  VueLodash,
   VueMoment
 )

@@ -1,41 +1,95 @@
 <template>
-    <main class="news">
-        <!-- <v-container fluid grid-list-lg class="newsfeed"> -->
-        <template v-if="loading">
-            Loading
-        </template>
-        <template row wrap v-if="!loading">
-            <article v-for="(item, index) in orderedRss" v-bind:key="item.link" v-bind:class="{ 'has-image': item.img }">
-                <div class="article-img">
-                    <img v-if="item.img" :src="item.img" alt="Image from article" />
-                </div>
+    <v-layout fill-height row wrap>
+        <v-layout fluid grid-list-lg v-if="!loading">
+            <!-- <v-layout row wrap> -->
+            <v-flex xs12>
+                <v-card tag="article" v-for="(item, index) in articleList" v-bind:key="item.link" v-bind:class="{ 
+                            'has-image': item.img, 
+                            'feature-image': item.topImage 
+                        }" class="elevation-5">
 
-                <header>
-                    {{item.title}}
-                </header>
-                <p class="snippet" v-html="item.contentSnippet"></p>
+                    <!-- {{item.link}} -->
+                    <v-layout v-if="item.img && !item.topImage">
+                        <v-flex xs5 align-center row fill-height>
+                            <v-img :src="item.img" height="125px" contain max-width="100%" max-height="100%"
+                                justify-center></v-img>
+                        </v-flex>
+                        <v-flex xs7 align-end tag="header">
+                            <h1>
+                                <!-- <span class="headline"> -->
+                                {{item.title}}
+                                <!-- </span> -->
+                            </h1>
+                        </v-flex>
+                    </v-layout>
+                    <v-card-title v-if="!item.img">
+                        <h1>{{item.title}}</h1>
+                    </v-card-title>
+                    <template v-if="item.topImage">
+                        <v-img class="white--text" height="200px" :src="item.img">
+                            <!-- <v-layout>
+                                <v-container fluid> -->
 
-                <!-- <aside>
-                </aside> -->
-                <footer>
-                    {{item.source}} / {{item.postAge}} 
-                    <!-- <template v-if="item.creator"> / by {{item.creator}}</template> -->
-                </footer>
-            </article>
-        </template>
-    </main>
+                            <header>
+                                <h1>{{item.title}}</h1>
+                            </header>
+                            <!-- </v-container>
+
+                                    </v-layout> -->
+                        </v-img>
+                    </template>
+                    <v-card-text class="content-snippet" v-html="item.description || item.contentSnippet"></v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions tag="footer">
+                        <img v-if="item.source.image" :src="item.source.image.url" :alt="item.source.image.title"
+                            :width="item.source.image.width" :height="item.source.image.height" />
+                        <!-- {{item.source.link}} -->
+                        <span class="source">
+                            {{item.source.title}}&nbsp;
+                        </span>
+                        <v-spacer></v-spacer>
+                        <span class="time">
+                            {{item.postAge}}
+                        </span>
+                        <!-- {{item.source.description}} -->
+                        <!-- {{item.source.image}} -->
+                        <!-- 
+                                    image:
+                                        link
+                                        url
+                                        title
+                                        width
+                                        height 
+                                -->
+                        <!-- <v-btn flat dark :href="item.link" target="_blank">Read More</v-btn> -->
+                    </v-card-actions>
+                </v-card>
+            </v-flex>
+        </v-layout>
+    <v-layout v-if="loading" fill-height>
+        <v-layout fill-height justify-center align-center>
+            <!-- <v-progress-circular :size="60" :width="3" color="success" indeterminate> -->
+            <v-progress-circular :size="55" :width="3" color="accent" indeterminate></v-progress-circular>
+            <!-- </v-progress-circular> -->
+        </v-layout>
+    </v-layout>
+    </v-layout>
 </template>
 
 <script>
 
 import rssParser from 'rss-parser';
 import moment from 'moment';
+// TODO uninstall vue-lodash, just load individual functions
+import _ from 'lodash';
 
 export default {
     name: 'news',
     data: () => {
         return {
-            fullRssItems: [],
+            rssItemList: [],
             loading: true
         };
     },
@@ -43,78 +97,108 @@ export default {
         async getRssResults() {
             let self = this;
             let rssRequests = [];
-            // let rssResults = [];
+            // let newResults = [];
             let feeds = this.$store.state.defaultRSSFeeds;
 
+            /*
+                queue up rss-parser requests for feeds to be requested and parsed to JSON
+            */
             for (let i=0; i<feeds.length; i++) {
-                // rssResults.push('result'+i);
-                // copy.push(items[i]);
                 let parser = new rssParser();
-                // parser.parseURL(url);
                 rssRequests.push(parser.parseURL(this.$store.state.corsProxy+feeds[i]));
             }
 
-            const results = await Promise.all(
+            /*
+                sets responses to variable once feeds have all been retrieved
+            */
+            let results = await Promise.all(
                 rssRequests.map(p => p.catch(e => e))    
             );
-            const validResults = results.filter(result => !(result instanceof Error));
 
-            // Promise.all(rssRequests)
-            //     .then(allResponses => {
+            /*
+                filter out failed requests
+            */   
+            results = results.filter(result => !(result instanceof Error));
 
-            //         console.log(allResponses)
-                    validResults.forEach(function(result){
-                        let feedTitle = result.title;
-                        // let feedImg = (result.image && result.img.url) ? result.image.url : false;
-                        result.items.forEach(function(i){
-                            console.log(i)
-                            let postDate = moment(i.pubDate);
-                            i.postAge = postDate.fromNow();
-                            i.unixTime = postDate.unix();
-                            i.source = feedTitle;
+            results.forEach(function(result){
+                // console.log(result);
+                /*
+                    grab the source title of the RSS response, for adding to each article object
+                */ 
+                let feedSource = {
+                    description: result.description,
+                    link: result.link,
+                    title: result.title,
+                    image: result.image
+                }
 
-                            let temporalDivElement = document.createElement("div");
-                            temporalDivElement.innerHTML = i['content:encoded'];
-                            // console.log(temporalDivElement)
-                            // console.log(i)
-                            let firstImg = temporalDivElement.getElementsByTagName('img')[0]
-                            // console.log();
-                            i.img = firstImg ? firstImg.getAttribute('src') : false;
+                result.items.forEach(function(i){
+                    /*
+                        create unrendered div, pop content in as HTML, parse through to extract 1st image as a preview image 
+                    */
+                    let temporalDivElement = document.createElement("div");
+                    temporalDivElement.innerHTML = i['content:encoded'];
+                    let firstImg = temporalDivElement.getElementsByTagName('img')[0];
+                    // * kill fake div with fire, hope it doesn't try to load a bunch of other images
+                    temporalDivElement = null;
 
-                            // console.log(i.img)
+                    i.img = firstImg ? firstImg.getAttribute('src') : false;
+                    i.topImage = false;
 
-                            // i.previewImg = firstImg;
-                            // i.sourceImg = feedImg;
-                            self.fullRssItems.push(i);
-                        })
-                    });
-                // })
-                // .catch(e => {
-                //     // self.loading = false;
-                //     console.log(e);
-                // });
-            // console.log(self.fullRssItems)
+
+                    if (i.img) {
+                        let imgWidth = firstImg.naturalWidth;
+                        let imgHeight = firstImg.naturalHeight;
+                        if (imgWidth>375 && (imgHeight<imgWidth)) {
+                            i.topImage = true;
+                        }
+                    }
+                    /*
+                        set postAge to "X days/hours ago"
+                        set unixTime to unix epoch time (sec) for sorting articles by time
+                    */
+                    let postDate = moment(i.pubDate);
+                    i.postAge = postDate.fromNow();
+                    i.unixTime = postDate.unix();
+                    /*
+                        add the title of the source to the article object
+                    */
+                    i.source = feedSource;
+
+                    self.rssItemList.push(i);
+                })
+            });
+
             self.loading = false;
         }
     },
     created: function() {
-        // this.$store.dispatch('getRssResults');
-        // this.getRssResults();
-        if (!this.orderedRss.length) {
+        if (!this.rssItemList.length) {
             this.getRssResults();
         }
     },
     beforeRouteEnter (to, from, next) {
-        // console.log(to, from, next)
-        // vm.loading = 
         next(vm => {
             vm.getRssResults();
         })
     },
     computed: {
-        orderedRss: function () {
-            return _.orderBy(this.fullRssItems, 'unixTime').reverse();
+        articleList: function() {
+            // let self = this;
+            var filtered_array = [];
+            if (this.rssItemList) {
+                for(var i =0; i < this.rssItemList.length; i++) {
+                    if(filtered_array.indexOf(this.rssItemList[i].link) === -1) {
+                        filtered_array.push(this.rssItemList[i])
+                    }
+                }
+            }
+            return _.orderBy(filtered_array, 'unixTime').reverse();
         }
+            // orderedRss: function () {
+        //     // this.fullRssItems = _.differenceBy(this.fullRssItems, this.orderedRss, 'link');
+        //     return _.orderBy(this.fullRssItems, 'unixTime').reverse();
+        // }
     }
 };
 </script>
@@ -129,98 +213,57 @@ $teal: #3b7080;
 $blackish: #1E1C1C;
 // ----------------
 
-.news {
-    padding: 1.5em 1em;
-    article {
-        // background-color: lighten($dust,20%);
-        color: $blackish;
-        color: #fff;
-        margin-bottom: 1em;
-        clear:both;
-        // display: grid;
-        // grid-template-columns: 40px 50px auto 50px 40px;
-        // grid-template-rows: auto auto auto;
-    }
-    header {
-        // background-color:  var(--v-secondary-base);
-        // background-color: $greyBrown;
-        font-size: 1.5rem;
-        line-height: 1.75rem;
-        font-family: $narrow;
-                        // border-bottom: 1px solid $avocado;
-
-        color: $avocado;
-        // background-color: $greyBrown;
-        // margin-bottom: 0.5em;
-        // border-bottom: 1px solid $avocado;
-        // padding-bottom: .5rem;
-    }
-    .snippet {
-        // color: $blackish;
-        // display: inline-block;
-    }
-    footer {
-        text-align: right;
-        // background-color: $avocado;
-        // color: $blackish;
-        // clear: both;
-        font-size: .8rem;
-        clear: both;
-        color: $avocado;
-    }
-    .has-image {
-        header {
-            // padding-left: 1rem;
-            // margin-left: 1rem;
-        }
-    }
-    .article-img {
-        float: left;
-        margin-right: 1rem;
-
-        // width: 25%;
-        // max-width: 25%;
-        // height: 100%;
-        img {
-            // width: 25%;
-            height: 9rem;
-            width: 9rem;
-            max-width: 100%;
-            object-fit: cover;
-        }
-        // width: 100%;
-        // max-width: 25%;
-    }   
-    /* styles for '...' */ 
-    .snippet {
-
-// padding-bottom: 5rem;
-        padding-top: 0.5rem;
-        margin-bottom: 0;
-    /* hide text if it more than N lines  */
+.content-snippet {
+          font-size: 14px;
+    line-height: 21px;
+    height: 56px;
     overflow: hidden;
-    /* for set '...' in absolute position */
-    position: relative; 
-    /* use this value to count block height */
-    line-height: 1.2em;
-    /* max-height = line-height (1.2) * lines max number (3) */
-    // max-height: 4.8em;
-    max-height: 5.6rem;
-    /* fix problem when last visible word doesn't adjoin right side  */
-    // text-align: justify;  
-    /* place for '...' */
-    // margin-right: -1em;
-    // padding-right: 1em;
-    }
-    /* create the ... */
-    .snippet:before {
-        content:'';
-        width:100%;
-        height:100%;    
-        position:absolute;
-        left:0;
-        top:0;
-        background:linear-gradient(transparent 70%, $background);
+    margin-bottom: 16px;
+
+    &::after {
+//   content: "";
+//   text-align: right;
+//   position: absolute;
+//   bottom: 0;
+//   right: 0;
+//   width: 70%;
+//   height: 1.2em;
+//   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+//   text-overflow: ellipsis;
+    // position: relative;
+
+}
+
+article {
+    .source {
+        max-width: 75%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
+
+article.feature-image {
+    header {
+        height: 100%;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr auto;
+    }
+    h1 {
+        background: 
+            linear-gradient(
+                rgba(0,0,0,0),
+                rgba(0,0,0,0.30) 33%,
+                rgba(0,0,0,0.45) 66%,
+                rgba(0,0,0,0.60),
+            );
+        grid-column: 1 / 1;
+        grid-row: 3 / 4;
+        padding: 2rem 1rem 1rem;
+    }
+}
+
 </style>
