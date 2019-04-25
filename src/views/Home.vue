@@ -69,7 +69,7 @@ export default {
   data: function() {
     return {
       colors: [],
-      imgUrl: 'http://unsplash.it/1900/1900/?random&featured',
+      imgUrl: 'https://unsplash.it/1900/1900/?random&featured',
       bg1: true,
       bg2: false,
       switchingImg: false

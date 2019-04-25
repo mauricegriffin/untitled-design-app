@@ -65,35 +65,14 @@ export default {
     },
     methods: {
         async getColors() {
-            // let self = this;
-            // let rssColorRequests = [];
-            // let colorFeeds = [
-            //     'https://feeds.feedburner.com/Colorcomboscom',
-            //     'https://feeds.feedburner.com/ColourloversPalettes/New'
-            // ]
-            // for (let i=0; i<colorFeeds.length; i++) {
-            //     let parser = new rssParser();
-            //     rssColorRequests.push(parser.parseURL(this.$store.state.corsProxy+colorFeeds[i]));
-            // }
-            // /* sets responses to variable once feeds have all been retrieved */
-            // let results = await Promise.all(
-            //     rssColorRequests.map(p => p.catch(e => e))    
-            // );
-            // /* filter out failed requests */   
-            // results = results.filter(result => !(result instanceof Error));
-            // this.paletteList = results;
-
             let parser = new rssParser();
             let results = await parser.parseURL(this.$store.state.corsProxy+'https://feeds.feedburner.com/Colorcomboscom')
-            // this.paletteList = results.items;
             results['items'].forEach(e => {
                 console.log(e)
                 var contentString = e.content;
                 let result = contentString.match(/[#]\b.{6}/g);
                 this.paletteList.push(result)
-                // console.log(result)
             });
-            // console.log(results.items)
         }
     },
     created: function() {

@@ -40,10 +40,51 @@
       <v-btn flat class="hidden-sm-and-down" to="/">Sign Out</v-btn>
     </v-toolbar>
     <v-content>
-      <v-container fluid>
+      <!-- <v-container fluid> -->
         <router-view></router-view>
-      </v-container>
+      <!-- </v-container> -->
     </v-content>
+
+    <v-footer fixed 
+      v-if="['photos','news','colors'].includes($route.name)"
+      >
+
+    <v-bottom-nav
+      :value="true"
+      absolute
+      color="secondary"
+    >
+      <v-btn
+        color="accent"
+        flat
+        value="news"
+        to="/news" 
+      >
+        <span>News</span>
+        <v-icon>rss_feed</v-icon>
+      </v-btn>
+
+      <v-btn
+        color="accent"
+        flat
+        value="photos"
+        to="/photos" 
+      >
+        <span>Photos</span>
+        <v-icon>photo_camera</v-icon>
+      </v-btn>
+
+      <v-btn
+        color="accent"
+        flat
+        value="colors"
+        to="/colors"
+      >
+        <span>Colors</span>
+        <v-icon>color_lens</v-icon>
+      </v-btn>
+    </v-bottom-nav>
+    </v-footer>
     <!-- <v-footer app></v-footer> -->
   </v-app>
 </template>
@@ -60,7 +101,7 @@ export default {
   data () {
     return {
         drawer: false
-
+        // bottomNav: this.$props.bottomNavShow
     }
   }
 }
@@ -75,7 +116,7 @@ export default {
     }
     .v-list__tile--active {
         .v-list__tile__content {
-            color: $accent;
+            color: var(--v-accent-base);
         }
     }
 

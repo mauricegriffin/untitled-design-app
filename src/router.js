@@ -33,17 +33,26 @@ export default new Router({
     {
       path: '/news',
       name: 'news',
-      component: () => import(/* webpackChunkName: "news" */ './views/NewsFeed.vue')
+      component: () => import(/* webpackChunkName: "news" */ './views/NewsFeed.vue'),
+      props: {
+        bottomNavShow: true
+      }
     },
     {
       path: '/photos',
       name: 'photos',
-      component: () => import(/* webpackChunkName: "photos" */ './views/Photos.vue')
+      component: () => import(/* webpackChunkName: "photos" */ './views/Photos.vue'),
+      props: {
+        bottomNavShow: true
+      }
     },
     {
       path: '/colors',
       name: 'colors',
-      component: () => import(/* webpackChunkName: "colors" */ './views/Colors.vue')
+      component: () => import(/* webpackChunkName: "colors" */ './views/Colors.vue'),
+      props: {
+        bottomNavShow: true
+      }
     }
   ]
 })

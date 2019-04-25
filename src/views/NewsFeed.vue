@@ -202,9 +202,7 @@ export default {
     }
 };
 </script>
-
-<style lang="scss">
-// COPIED FOR REFERENCE
+<style lang="scss"> // COPIED FOR REFERENCE
 $tan: #f6d8ae;
 $greyBrown: #5a5353;
 $avocado: #ade25d;
@@ -214,25 +212,11 @@ $blackish: #1E1C1C;
 // ----------------
 
 .content-snippet {
-          font-size: 14px;
+    font-size: 14px;
     line-height: 21px;
     height: 56px;
     overflow: hidden;
     margin-bottom: 16px;
-
-    &::after {
-//   content: "";
-//   text-align: right;
-//   position: absolute;
-//   bottom: 0;
-//   right: 0;
-//   width: 70%;
-//   height: 1.2em;
-//   background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
-}
-//   text-overflow: ellipsis;
-    // position: relative;
-
 }
 
 article {
@@ -252,13 +236,13 @@ article.feature-image {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr auto;
     }
+
     h1 {
-        background: 
-            linear-gradient(
-                rgba(0,0,0,0),
-                rgba(0,0,0,0.30) 33%,
-                rgba(0,0,0,0.45) 66%,
-                rgba(0,0,0,0.60),
+        background:
+            linear-gradient(rgba(0, 0, 0, 0),
+            rgba(0, 0, 0, 0.30) 33%,
+            rgba(0, 0, 0, 0.45) 66%,
+            rgba(0, 0, 0, 0.60),
             );
         grid-column: 1 / 1;
         grid-row: 3 / 4;

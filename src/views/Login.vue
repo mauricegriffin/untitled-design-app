@@ -1,11 +1,16 @@
 <template>
     <v-container fluid>
         <v-layout>
-            <h1>Sign In Page</h1>
+            <v-flex>
+                <h1>Sign In Page</h1>
+            </v-flex>
         </v-layout>
-        <v-btn v-on:click.stop="loginSuccess">
-            LOGIN
-        </v-btn>
+        <v-layout>
+            <v-btn v-on:click.stop="loginSuccess">
+                LOGIN
+            </v-btn>
+
+        </v-layout>
     </v-container>
 </template>
 <script>

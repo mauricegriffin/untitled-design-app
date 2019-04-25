@@ -1,86 +1,50 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import rssParser from 'rss-parser';
 
 Vue.use(Vuex)
+Vue.use(VueAxios, axios)
 
 export default new Vuex.Store({
   state: {
     appTitle: "Untitled Design App",
     corsProxy: 'https://cors-anywhere.herokuapp.com/', //cors.io //
     defaultRSSFeeds: [
-      'http://feeds.feedburner.com/webdesignerdepot/?format=xml',
+      'https://feeds.feedburner.com/webdesignerdepot/?format=xml',
       'https://thenextweb.com/dd/feed/',
       'https://www.smashingmagazine.com/feed',
       'https://webdesign.tutsplus.com/posts',
-      'http://www.awwwards.com/blog/feed',
-      'http://www.creativebloq.com/feed',
-      'http://www.hongkiat.com/blog/category/design/feed/',
-      'http://feeds.feedburner.com/tympanus'
+      'https://www.awwwards.com/blog/feed',
+      'https://www.creativebloq.com/feed',
+      'https://www.hongkiat.com/blog/category/design/feed/',
+      'https://feeds.feedburner.com/tympanus'
     ],
-    rssFeedResults: []
-  },
-  mutations: {
-    // addRssResults(state, payload) {
-    //   let rssFeed = {};
-      // console.log(payload);
-      // state.rssFeedResults += payload;
-      // payload.forEach(function(result){
-      //   // console.log(result.data)
-      //   let rssFeed = result.data;
-
-      //   // console.log(feed.title);
-      //   // feed.items.forEach(function(entry) {
-      //   //   console.log(entry.title + ':' + entry.link);
-      //   // })
-      //   let parser = new rssParser();
-
-      //   parser.parseString(rssFeed, function(parsed){
-      //     state.rssFeedResults += JSON.stringify(parsed);
-      //     console.log(JSON.stringify(parsed));
-      //   })
-      // });
-    // }
+    rssFeedArticles: [],
+    rssColorPalettes: [],
+    imageSearches: []
   },
   actions: {
-    // async getRssResults({state, commit}) {
-    //   let rssRequests = [];
-    //   let rssResults = [];
-    //   let feeds = state.defaultRSSFeeds;
-    //   // const parser = new rssParser();
-
-    //   for (let i=0; i<feeds.length; i++) {
-    //     // rssResults.push('result'+i);
-    //     // copy.push(items[i]);
-    //     rssRequests.push(axios.get(state.corsProxy+feeds[i]));
-    //   }
-
-    //   Promise.all(rssRequests)
-    //     .then(allResponses => {
-    //       commit('addRssResults', allResponses);
-
-    //     })
-    // }
+    getColors() {
+      let parser = new rssParser();
+      parser.parseURL(this.$store.state.corsProxy + 'https://feeds.feedburner.com/Colorcomboscom')
+        .then(r => r.data)
+        .then(colors => {
+          commit('SET_COLORS', colors)
+        })
+    }
+  },
+  mutations: {
+    SET_COLORS(state, colors) {
+      let colorResults = [];
+      colors['items'].forEach(e => {
+        console.log(e)
+        // var contentString = e.content;
+        let result = contentString['content'].match(/[#]\b.{6}/g);
+        colorResults.push(result)
+      });
+      state.rssColorPalettes = colorResults;
+    }
   }
-
-      // state.defaultRSSFeeds.forEach(element => {
-      //   rssRequests.push(axios.get(state.corsProxy+element));
-      // });
-    //   axios.all(rssRequests)
-    //     .then(axios.spread(function(results) {
-    //       let rssParse = new rssParser();
-
-    //       results.forEach(function(e){
-    //         let result = e.text();
-    //         rssParse.parseString(result, function(parsed) {
-    //           commit('addRssResults', parsed);
-    //         });
-    //       })
-    //       console.log(results)
-    //     }));
-    // }
-  // getters: {
-  //   getRss: state => {
-  //     return state.rssFeedResults;
-  //   }
-  // }
 });
