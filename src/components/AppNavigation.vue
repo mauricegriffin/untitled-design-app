@@ -12,7 +12,7 @@
                 </template>
             </v-list> -->
             <v-list>
-                <v-list-tile to="/news">
+                <v-list-tile to="/news/latest">
                     <v-list-tile-content>
                         News
                     </v-list-tile-content>
@@ -40,7 +40,7 @@
             <router-link to="/">
                 <v-toolbar-title to="/">{{this.$store.state.appTitle}}</v-toolbar-title>
             </router-link>
-            <v-btn flat class="hidden-sm-and-down" to="/news">News</v-btn>
+            <v-btn flat class="hidden-sm-and-down" to="/news/latest">News</v-btn>
             <v-btn flat class="hidden-sm-and-down" to="/photos">Photos</v-btn>
             <v-btn flat class="hidden-sm-and-down" to="/colors">Colors</v-btn>
             <v-spacer class="hidden-sm-and-down"></v-spacer>

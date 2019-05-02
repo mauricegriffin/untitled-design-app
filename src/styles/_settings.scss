@@ -32,12 +32,25 @@ $sans: 'Roboto', sans-serif;
 $narrow: 'Roboto Condensed', sans-serif;
 $serif: 'Roboto Slab', serif;
 
-$background: darken($greyBrown, 18%);
+// $background: darken($greyBrown, 18%);
+$background: $greyBrown;
+$darkBackground:  darken($background, 20%);
+
 .theme--dark.application {
   background: $background;
   color: #fff;
 }
 
+.theme--dark.v-sheet {
+  background-color: $darkBackground;
+  border-color: $darkBackground;
+  color: #fff;
+}
+
+// .theme--dark.v-footer {
+//   background: $tan;
+//   color: $coral;
+// }
 // <style scoped>
 //   .something {
 //     color: var(--v-primary-base)

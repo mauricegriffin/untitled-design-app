@@ -2,7 +2,16 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import rssParser from 'rss-parser';
+// import rssParser from 'rss-parser'
+import UnsplashService from "@/services/UnsplashService";
+import UnsplashJson from "@/services/unsplash.json";
+import moment from 'moment';
+// TODO uninstall vue-lodash, just load individual functions
+// import _ from 'lodash';
+
+import stringHash from 'string-hash'
+// import pathify from 'vuex-pathify'
+
 
 Vue.use(Vuex)
 Vue.use(VueAxios, axios)
@@ -10,9 +19,13 @@ Vue.use(VueAxios, axios)
 export default new Vuex.Store({
   state: {
     appTitle: "Untitled Design App",
-    corsProxy: 'https://cors-anywhere.herokuapp.com/', //cors.io //
+    // corsProxy: 'https://cors-anywhere.herokuapp.com/', //cors.io //
+    rss2jsonUrl: 'https://api.rss2json.com/v1/api.json?rss_url=',
+    rss2jsonApiKey: '2dmmy94izwcwtfmneqscejmhbrl8m1taptujijgy',
+
+    // corsProxy: 'https://api.rss2json.com/v1/api.json?rss_url=',
     defaultRSSFeeds: [
-      'https://feeds.feedburner.com/webdesignerdepot/?format=xml',
+      'https://feeds.feedburner.com/webdesignerdepot/?format=json',
       'https://thenextweb.com/dd/feed/',
       'https://www.smashingmagazine.com/feed',
       'https://webdesign.tutsplus.com/posts',
@@ -22,29 +35,167 @@ export default new Vuex.Store({
       'https://feeds.feedburner.com/tympanus'
     ],
     rssFeedArticles: [],
-    rssColorPalettes: [],
-    imageSearches: []
+    rssFeedArticlesLoading: false,
+    rssResultsAge: false,
+    trendingColors: [],
+    imageSearches: [],
+    selectedArticle: false,
+    selectedArticleId: false
   },
   actions: {
-    getColors() {
-      let parser = new rssParser();
-      parser.parseURL(this.$store.state.corsProxy + 'https://feeds.feedburner.com/Colorcomboscom')
-        .then(r => r.data)
-        .then(colors => {
-          commit('SET_COLORS', colors)
+    getColors({commit}) {
+      axios.get(this.state.rss2jsonUrl+encodeURIComponent('https://feeds.feedburner.com/Colorcomboscom')+'&api_key='+this.state.rss2jsonApiKey)
+        .then(function (e) {
+          commit('SET_COLORS', e.data.items)
         })
+    },
+    imageSearch({commit}, searchQuery) {
+      if (searchQuery) {
+        UnsplashService.getSearchResults(searchQuery)
+          .then(function (e) {
+            commit('SET_PHOTOS', e.data.results)
+          })
+      } else {
+        commit('SET_PHOTOS', UnsplashJson.results)
+      }
+    },
+    getRss({commit}) {
+      let rssRequests = [];
+      let rssUrl = '';
+      for (let i = 0; i < this.state['defaultRSSFeeds'].length; i++) {
+        rssUrl = encodeURIComponent(this.state.defaultRSSFeeds[i])
+        rssRequests.push(axios.get(this.state.rss2jsonUrl+rssUrl+'&api_key='+this.state.rss2jsonApiKey))
+      }
+
+      Promise.all(
+        rssRequests.map(p => p.catch(e => e))
+      ).then(function (e) {
+        return e.filter(result => !(result instanceof Error));
+      }).then(function (e) {
+        commit('SET_RSS', e)
+      })
+
     }
+
   },
   mutations: {
     SET_COLORS(state, colors) {
+      state.trendingColors = colors;
+    },
+    SET_PHOTOS(state, results) {
+      state.imageSearches = results;
+    },
+    SET_RSS(state, results) {
+      state.rssFeedArticles = results;
+    }
+  },
+  getters: {
+    rssFeed: function (state) {
+
+      let rssItemList = [];
+
+      state['rssFeedArticles'].forEach(function (result) {
+
+        result = result.data;
+        /*
+            grab the source title of the RSS response, for adding to each article object
+        */
+        let feedSource = result.feed;
+
+        result.items.forEach(function (i) {
+          i.source = feedSource;
+          i.articleId = stringHash(i.link);
+
+          let thumbnailUrl = i.thumbnail ? i.thumbnail : false;
+
+
+          i.topImage = false;
+          let articleImg = false;
+
+          // if (!thumbnailUrl) {
+            const parser = new DOMParser();
+            let temporalDivElement = parser.parseFromString((i['content:encoded'] ? i['content:encoded'] : i.content), 'text/html');
+            // articleImg = temporalDivElement.images[0] ? temporalDivElement.images[0] : false; 
+            articleImg = temporalDivElement.querySelector('img') ? temporalDivElement.querySelector('img') : false;
+
+            i.thumbnailFromArticle = false;
+
+            if (thumbnailUrl && articleImg) {
+              // console.log(articleImg.getAttribute('src'), thumbnailUrl)
+              if (thumbnailUrl === articleImg.getAttribute('src')) {
+                i.thumbnailFromArticle = true;
+                // console.log(articleImg.getAttribute('src'))
+                // temporalDivElement.body.querySelector('img').remove();
+                // articleImg.remove();
+                // temporalDivElement.body.removeChild(articleImg);
+                // i.content = temporalDivElement.body.innerText;
+                // thumbnailUrl = false;
+              }
+            }
+            if(thumbnailUrl) {
+              i.img = thumbnailUrl;
+              i.topImage = true;
+            }
+            // } else {
+            // i.img = thumbnailUrl;
+            // i.topImage = true;
+          // }
+
+          if (articleImg && !i.thumbnail) {
+
+            let imgWidth = Number.parseInt(articleImg.getAttribute('width'));
+            let imgHeight = Number.parseInt(articleImg.getAttribute('height'));
+            i.topImage = true ? ((Number.isInteger(imgWidth) && Number.isInteger(imgHeight))&&(imgWidth>imgHeight)&&(imgWidth>299)) : false;
+
+            // if there is no rss feed icon, and the image is icon sized, use as feed icon
+            if ((!i.source.image) && (imgWidth < 50)) {
+              i.source.image = {
+                url: articleImg.getAttribute('src'),
+                title: i.source.title
+              }
+            } else {
+              i.img = articleImg.getAttribute('src')
+            }
+
+          }
+          /*
+              set postAge to "X days/hours ago"
+              set unixTime to unix epoch time (sec) for sorting articles by time
+          */
+          let postDate = moment(i.pubDate);
+          i.postAge = postDate.fromNow();
+          i.unixTime = postDate.unix();
+
+          // articleImg = null;
+
+
+          rssItemList.push(i);
+        })
+      });
+      return rssItemList;
+    },
+
+    // articleById: function(getters, state) {
+    articleById: (getters) => id => {
+
+      // console.log(this.getters.rssFeed)
+
+        // return getters.rssFeed.filter(
+        //   function(item) {
+        //     item.articleId == id;
+        //   }
+        // )[0]
+      // return '';
+    },
+    rssColorPalettes: function (state) {
       let colorResults = [];
-      colors['items'].forEach(e => {
-        console.log(e)
-        // var contentString = e.content;
-        let result = contentString['content'].match(/[#]\b.{6}/g);
+      state['trendingColors'].forEach(e => {
+        let result = e['content'].match(/[#]\b.{6}/g);
         colorResults.push(result)
       });
-      state.rssColorPalettes = colorResults;
+      return colorResults;
     }
   }
+  // plugins: [ pathify.plugin ], // activate plugin
+  // ...store
 });

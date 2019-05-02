@@ -1,204 +1,133 @@
 <template>
-    <v-layout fill-height row wrap>
-        <v-layout fluid grid-list-lg v-if="!loading">
-            <!-- <v-layout row wrap> -->
+    <v-container fluid grid-list-lg>
+        <v-layout v-if="!loading" fill-height row wrap>
             <v-flex xs12>
-                <v-card tag="article" v-for="(item, index) in articleList" v-bind:key="item.link" v-bind:class="{ 
-                            'has-image': item.img, 
-                            'feature-image': item.topImage 
-                        }" class="elevation-5">
+                <Flipped v-for="(item, index) in orderedRss" v-bind:key="item.articleId" :flipId="item.articleId" stagger="article">
+                    <v-card tag="article" v-bind:class="{ 
+                                'has-image': item.img, 
+                                'has-feature-image': item.topImage 
+                            }" class="elevation-10"
+                            >
 
-                    <!-- {{item.link}} -->
-                    <v-layout v-if="item.img && !item.topImage">
-                        <v-flex xs5 align-center row fill-height>
-                            <v-img :src="item.img" height="125px" contain max-width="100%" max-height="100%"
-                                justify-center></v-img>
-                        </v-flex>
-                        <v-flex xs7 align-end tag="header">
-                            <h1>
-                                <!-- <span class="headline"> -->
-                                {{item.title}}
-                                <!-- </span> -->
-                            </h1>
-                        </v-flex>
-                    </v-layout>
-                    <v-card-title v-if="!item.img">
-                        <h1>{{item.title}}</h1>
-                    </v-card-title>
-                    <template v-if="item.topImage">
-                        <v-img class="white--text" height="200px" :src="item.img">
-                            <!-- <v-layout>
-                                <v-container fluid> -->
 
-                            <header>
+                             <!-- v-for="(item, index) in orderedRss" v-bind:key="item.articleId" -->
+
+
+
+                            <!-- <Flipped :inverseFlipId="item.article"> -->
+                        <span @click="handleNavigate(item.articleId)">
+
+                            <!-- <v-layout v-if="item.img && !item.topImage">
+                                <v-card-title class="pb-0" tag="header">
+                                    <v-flex xs5 align-center row>
+                                        <v-img :src="item.img" contain max-width="125px" max-height="125px"
+                                            justify-center class="pb-0"></v-img>
+                                    </v-flex>
+                                    <v-flex xs7 align-end tag="header">
+                                        <h1>
+                                            {{item.title}}
+                                        </h1>
+                                    </v-flex>
+                                </v-card-title>
+                            </v-layout> -->
+                            <!-- has no image for article -->
+                            <!-- <v-card-title v-if="!item.img" class="darken-3 pb-0" tag="header">
                                 <h1>{{item.title}}</h1>
-                            </header>
-                            <!-- </v-container>
+                            </v-card-title> -->
 
-                                    </v-layout> -->
-                        </v-img>
-                    </template>
-                    <v-card-text class="content-snippet" v-html="item.description || item.contentSnippet"></v-card-text>
+                            <!-- has featured-image / topImage -->
+                                        <Flipped :inverseFlipId="item.articleId" translate opacity stagger="article">
 
-                    <v-divider></v-divider>
+                            <v-img class="white--text feature-image" :src="item.img" v-if="item.topImage"></v-img>
+                                        </Flipped>
+                                <!-- <header> -->
+                                    <Flipped :flipId="`title-${item.articleId}`" translate stagger="article">
 
-                    <v-card-actions tag="footer">
-                        <img v-if="item.source.image" :src="item.source.image.url" :alt="item.source.image.title"
-                            :width="item.source.image.width" :height="item.source.image.height" />
-                        <!-- {{item.source.link}} -->
-                        <span class="source">
-                            {{item.source.title}}&nbsp;
+                                        <h1>{{item.title}}</h1>
+                                    </Flipped>
+                                <!-- </header> -->
+
                         </span>
-                        <v-spacer></v-spacer>
-                        <span class="time">
-                            {{item.postAge}}
-                        </span>
-                        <!-- {{item.source.description}} -->
-                        <!-- {{item.source.image}} -->
-                        <!-- 
-                                    image:
-                                        link
-                                        url
-                                        title
-                                        width
-                                        height 
-                                -->
-                        <!-- <v-btn flat dark :href="item.link" target="_blank">Read More</v-btn> -->
-                    </v-card-actions>
-                </v-card>
+                        <Flipped :inverseFlipId="item.articleId">
+                            <v-card-text class="content-snippet">
+                                {{(item.description ? item.description : item.contentSnippet) | striphtml}}
+                            </v-card-text>
+                        </Flipped>
+
+                        <v-divider></v-divider>
+
+
+                        <v-card-actions class="px-3 pb-2 caption">
+                            <Flipped :flipId="`source-${item.articleId}`" stagger="article">
+                                <img v-if="item.source.image" :src="item.source.image" :alt="item.source.title"
+                                    :width="item.source.image.width" :height="item.source.image.height" />
+                            </Flipped>
+                            <Flipped :flipId="`source-title-${item.articleId}`" stagger="article">
+                                <span class="source">
+                                    {{item.source.title}}&nbsp;
+                                </span>
+                            </Flipped>
+                            <v-spacer></v-spacer>
+                            <span class="time">
+                                {{item.postAge}}
+                            </span>
+                        </v-card-actions>
+                            <!-- </Flipped> -->
+                    </v-card>
+                </Flipped>
             </v-flex>
         </v-layout>
-    <v-layout v-if="loading" fill-height>
-        <v-layout fill-height justify-center align-center>
-            <!-- <v-progress-circular :size="60" :width="3" color="success" indeterminate> -->
-            <v-progress-circular :size="55" :width="3" color="accent" indeterminate></v-progress-circular>
-            <!-- </v-progress-circular> -->
+        <v-layout v-if="loading" fill-height row wrap>
+            <v-layout fill-height justify-center align-center>
+                <v-progress-circular :size="55" :width="3" color="accent" indeterminate></v-progress-circular>
+            </v-layout>
         </v-layout>
-    </v-layout>
-    </v-layout>
+    </v-container>
 </template>
 
 <script>
 
-import rssParser from 'rss-parser';
-import moment from 'moment';
-// TODO uninstall vue-lodash, just load individual functions
+import Vuex from 'vuex';
 import _ from 'lodash';
+import { Flipper, Flipped } from "vue-flip-toolkit";
 
 export default {
     name: 'news',
+    components: {
+        Flipped,
+        Flipper
+    },
     data: () => {
         return {
-            rssItemList: [],
-            loading: true
-        };
+            articleSelected: this.$store.state.selectedArticle
+            // loading: false
+            // loading: 
+        }
     },
     methods: {
-        async getRssResults() {
-            let self = this;
-            let rssRequests = [];
-            // let newResults = [];
-            let feeds = this.$store.state.defaultRSSFeeds;
-
-            /*
-                queue up rss-parser requests for feeds to be requested and parsed to JSON
-            */
-            for (let i=0; i<feeds.length; i++) {
-                let parser = new rssParser();
-                rssRequests.push(parser.parseURL(this.$store.state.corsProxy+feeds[i]));
-            }
-
-            /*
-                sets responses to variable once feeds have all been retrieved
-            */
-            let results = await Promise.all(
-                rssRequests.map(p => p.catch(e => e))    
-            );
-
-            /*
-                filter out failed requests
-            */   
-            results = results.filter(result => !(result instanceof Error));
-
-            results.forEach(function(result){
-                // console.log(result);
-                /*
-                    grab the source title of the RSS response, for adding to each article object
-                */ 
-                let feedSource = {
-                    description: result.description,
-                    link: result.link,
-                    title: result.title,
-                    image: result.image
+        handleNavigate(id) {
+            id = parseInt(id)
+            for (let i = 0; i < this.orderedRss.length; i++) {
+                if (this.orderedRss[i].articleId == id) {
+                    this.$store.state.selectedArticle = this.orderedRss[i];
                 }
-
-                result.items.forEach(function(i){
-                    /*
-                        create unrendered div, pop content in as HTML, parse through to extract 1st image as a preview image 
-                    */
-                    let temporalDivElement = document.createElement("div");
-                    temporalDivElement.innerHTML = i['content:encoded'];
-                    let firstImg = temporalDivElement.getElementsByTagName('img')[0];
-                    // * kill fake div with fire, hope it doesn't try to load a bunch of other images
-                    temporalDivElement = null;
-
-                    i.img = firstImg ? firstImg.getAttribute('src') : false;
-                    i.topImage = false;
-
-
-                    if (i.img) {
-                        let imgWidth = firstImg.naturalWidth;
-                        let imgHeight = firstImg.naturalHeight;
-                        if (imgWidth>375 && (imgHeight<imgWidth)) {
-                            i.topImage = true;
-                        }
-                    }
-                    /*
-                        set postAge to "X days/hours ago"
-                        set unixTime to unix epoch time (sec) for sorting articles by time
-                    */
-                    let postDate = moment(i.pubDate);
-                    i.postAge = postDate.fromNow();
-                    i.unixTime = postDate.unix();
-                    /*
-                        add the title of the source to the article object
-                    */
-                    i.source = feedSource;
-
-                    self.rssItemList.push(i);
-                })
-            });
-
-            self.loading = false;
+            }            
+            this.$router.push(`article/${id}`);
         }
     },
     created: function() {
-        if (!this.rssItemList.length) {
-            this.getRssResults();
+        if (this['rssFeed'].length < 1) {
+            this.$store.dispatch('getRss')
         }
-    },
-    beforeRouteEnter (to, from, next) {
-        next(vm => {
-            vm.getRssResults();
-        })
     },
     computed: {
-        articleList: function() {
-            // let self = this;
-            var filtered_array = [];
-            if (this.rssItemList) {
-                for(var i =0; i < this.rssItemList.length; i++) {
-                    if(filtered_array.indexOf(this.rssItemList[i].link) === -1) {
-                        filtered_array.push(this.rssItemList[i])
-                    }
-                }
-            }
-            return _.orderBy(filtered_array, 'unixTime').reverse();
+        orderedRss() {
+            return _.orderBy(this.rssFeed, 'unixTime').reverse()
+        },
+        ...Vuex.mapGetters(['rssFeed']),
+        loading() {
+            return this.$store.state.rssFeedArticlesLoading
         }
-            // orderedRss: function () {
-        //     // this.fullRssItems = _.differenceBy(this.fullRssItems, this.orderedRss, 'link');
-        //     return _.orderBy(this.fullRssItems, 'unixTime').reverse();
-        // }
     }
 };
 </script>
@@ -212,42 +141,55 @@ $blackish: #1E1C1C;
 // ----------------
 
 .content-snippet {
-    font-size: 14px;
-    line-height: 21px;
-    height: 56px;
+    font-size: 13px;
+    line-height: 17px;
+    height: 52px;
     overflow: hidden;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 article {
     .source {
-        max-width: 75%;
+        max-width: 70%;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    span.time {
+        width: 12rem;
+        text-align: right;
+    }
+    
 }
 
-article.feature-image {
+article.has-feature-image {
+
+    .feature-image {
+        max-height: 225px;
+        border-top-left-radius: 1.5rem;
+        border-top-right-radius: 1.5rem;
+    }
+
     header {
         height: 100%;
         width: 100%;
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr auto;
+        // display: grid;
+        // grid-template-columns: 1fr;
+        // grid-template-rows: 1fr 1fr auto;
     }
 
     h1 {
-        background:
-            linear-gradient(rgba(0, 0, 0, 0),
-            rgba(0, 0, 0, 0.30) 33%,
-            rgba(0, 0, 0, 0.45) 66%,
-            rgba(0, 0, 0, 0.60),
-            );
-        grid-column: 1 / 1;
-        grid-row: 3 / 4;
-        padding: 2rem 1rem 1rem;
+        // background:
+        //     linear-gradient(rgba(0, 0, 0, 0),
+        //     rgba(0, 0, 0, 0.30) 33%,
+        //     rgba(0, 0, 0, 0.45) 66%,
+        //     rgba(0, 0, 0, 0.60),
+        //     );
+        // grid-column: 1 / 1;
+        // grid-row: 3 / 4;
+        padding: 1rem 1rem 0;
     }
 }
 
 </style>
+

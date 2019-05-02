@@ -25,7 +25,9 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar class="primary" fixed scroll-off-screen v-if="!['home'].includes($route.name)" app>
+
+
+    <v-toolbar class="primary darken-4" fixed scroll-off-screen v-if="!['home'].includes($route.name)" app>
       <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer class="hidden-md-and-up"></v-spacer>
       <router-link to="/">
@@ -46,26 +48,26 @@
     </v-content>
 
     <v-footer fixed 
-      v-if="['photos','news','colors'].includes($route.name)"
+      v-if="!['home','login','join'].includes($route.name)"
       >
 
     <v-bottom-nav
       :value="true"
       absolute
-      color="secondary"
+      color="primary darken-4"
     >
       <v-btn
-        color="accent"
+        color="warning"
         flat
         value="news"
-        to="/news" 
+        to="/news/latest" 
       >
         <span>News</span>
         <v-icon>rss_feed</v-icon>
       </v-btn>
 
       <v-btn
-        color="accent"
+        color="warning"
         flat
         value="photos"
         to="/photos" 
@@ -75,7 +77,7 @@
       </v-btn>
 
       <v-btn
-        color="accent"
+        color="warning"
         flat
         value="colors"
         to="/colors"
@@ -109,37 +111,51 @@ export default {
 
 <style lang="scss">
     .v-toolbar__content {
-        a {
+      a {
         color: white;
         text-decoration: none;
-        }
+      }
     }
+
     .v-list__tile--active {
-        .v-list__tile__content {
-            color: var(--v-accent-base);
-        }
+      .v-list__tile__content {
+        color: var(--v-accent-base);
+      }
     }
 
 
     article {
-    // ? lazily avoid override by Vuetify styles
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    border-bottom-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
-    margin-bottom: 1.5rem;
+      // ? lazily avoid override by Vuetify styles
 
-    h1 {
-        font-family: $narrow;
+      margin-bottom: 1.5rem;
+
+      h1 {
         font-weight: normal;
-        line-height: 1.75rem;
-    }
-    footer, .v-card__actions {
-        & > img {
-            border-radius: 0.5rem;
-            margin-right: 0.5rem;
+        font-size: 1.25rem;
+        line-height: 1.7rem;
+      }
+
+      .v-card__actions {
+        footer {
+          width: 100%;
         }
+
+        &>img {
+          max-width: 26px;
+          max-height: 26px;
+          border-radius: 0.5rem;
+          margin-right: 0.5rem;
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          padding: 1px;
+        }
+      }
+
+      &.v-card {
+        border-radius: 1.5rem;
+      }
     }
-}
+    .v-content__wrap {
+      // margin-bottom: 3rem;
+    }
 </style>
 

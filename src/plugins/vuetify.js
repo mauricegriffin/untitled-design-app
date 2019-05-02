@@ -1,7 +1,11 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
 import 'vuetify/src/stylus/app.styl';
-import VueMoment from 'vue-moment';
+// import 'vuetify-scss/main.scss';
+// import VueMoment from 'vue-moment';
+// import VueLazyload from 'vue-lazyload'
+// import { VuetifyLazyImagePlugin } from "vuetify-lazy-image";
+
 
 Vue.use(
   Vuetify, {
@@ -12,13 +16,15 @@ Vue.use(
       error: '#461220',
       info: '#f6d8ae', //tan
       success: '#a0a083', //dust
-      warning: '#FF715B', //coral
-      teal: '#3b7080' //teal
+      warning: '#FF715B' //coral
     },
     options: {
       customProperties: true
     },
     iconfont: 'md',
   },
-  VueMoment
+  // VueMoment,
+  // VueLazyload
 )
+
+// Vue.use(VuetifyLazyImagePlugin)
