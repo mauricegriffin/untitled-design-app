@@ -46,7 +46,27 @@ export default new Vuex.Store({
     getColors({commit}) {
       axios.get(this.state.rss2jsonUrl+encodeURIComponent('https://feeds.feedburner.com/Colorcomboscom')+'&api_key='+this.state.rss2jsonApiKey)
         .then(function (e) {
-          commit('SET_COLORS', e.data.items)
+
+
+          let colorResults = [];
+          let feed = e.data.feed;
+          e.data['items'].forEach(i => {
+            let result = {};
+            // * add feed data to item, will be more useful when other palette sources are added
+            result.feed = feed;
+            // * result.open set for triggering Flipped animation
+            result.open = false;
+            // * make a hash for unique key
+            result.paletteId = stringHash(i.content);
+            // * extract palette colors from content 
+            result.colors = i['content'].match(/[#]\b.{6}/g);
+            // console.log(result)
+            colorResults.push(result);
+          });
+          // return colorResults;
+
+          // console.log(e.data)
+          commit('SET_COLORS', colorResults)
         })
     },
     imageSearch({commit}, searchQuery) {
@@ -91,11 +111,8 @@ export default new Vuex.Store({
   },
   getters: {
     rssFeed: function (state) {
-
       let rssItemList = [];
-
       state['rssFeedArticles'].forEach(function (result) {
-
         result = result.data;
         /*
             grab the source title of the RSS response, for adding to each article object
@@ -108,44 +125,29 @@ export default new Vuex.Store({
 
           let thumbnailUrl = i.thumbnail ? i.thumbnail : false;
 
-
           i.topImage = false;
           let articleImg = false;
 
-          // if (!thumbnailUrl) {
-            const parser = new DOMParser();
-            let temporalDivElement = parser.parseFromString((i['content:encoded'] ? i['content:encoded'] : i.content), 'text/html');
-            // articleImg = temporalDivElement.images[0] ? temporalDivElement.images[0] : false; 
-            articleImg = temporalDivElement.querySelector('img') ? temporalDivElement.querySelector('img') : false;
+          const parser = new DOMParser();
+          let temporalDivElement = parser.parseFromString((i['content:encoded'] ? i['content:encoded'] : i.content), 'text/html');
+          articleImg = temporalDivElement.querySelector('img') ? temporalDivElement.querySelector('img') : false;
 
-            i.thumbnailFromArticle = false;
+          i.thumbnailFromArticle = false;
 
-            if (thumbnailUrl && articleImg) {
-              // console.log(articleImg.getAttribute('src'), thumbnailUrl)
-              if (thumbnailUrl === articleImg.getAttribute('src')) {
-                i.thumbnailFromArticle = true;
-                // console.log(articleImg.getAttribute('src'))
-                // temporalDivElement.body.querySelector('img').remove();
-                // articleImg.remove();
-                // temporalDivElement.body.removeChild(articleImg);
-                // i.content = temporalDivElement.body.innerText;
-                // thumbnailUrl = false;
-              }
+          if (thumbnailUrl && articleImg) {
+            if (thumbnailUrl === articleImg.getAttribute('src')) {
+              i.thumbnailFromArticle = true;
             }
-            if(thumbnailUrl) {
-              i.img = thumbnailUrl;
-              i.topImage = true;
-            }
-            // } else {
-            // i.img = thumbnailUrl;
-            // i.topImage = true;
-          // }
-
+          }
+          if (thumbnailUrl) {
+            i.img = thumbnailUrl;
+            i.topImage = true;
+          }
           if (articleImg && !i.thumbnail) {
 
             let imgWidth = Number.parseInt(articleImg.getAttribute('width'));
             let imgHeight = Number.parseInt(articleImg.getAttribute('height'));
-            i.topImage = true ? ((Number.isInteger(imgWidth) && Number.isInteger(imgHeight))&&(imgWidth>imgHeight)&&(imgWidth>299)) : false;
+            i.topImage = true ? ((Number.isInteger(imgWidth) && Number.isInteger(imgHeight)) && (imgWidth > imgHeight) && (imgWidth > 299)) : false;
 
             // if there is no rss feed icon, and the image is icon sized, use as feed icon
             if ((!i.source.image) && (imgWidth < 50)) {
@@ -156,7 +158,6 @@ export default new Vuex.Store({
             } else {
               i.img = articleImg.getAttribute('src')
             }
-
           }
           /*
               set postAge to "X days/hours ago"
@@ -166,36 +167,32 @@ export default new Vuex.Store({
           i.postAge = postDate.fromNow();
           i.unixTime = postDate.unix();
 
-          // articleImg = null;
-
-
           rssItemList.push(i);
         })
       });
       return rssItemList;
     },
-
-    // articleById: function(getters, state) {
+    // ! figure this one out
     articleById: (getters) => id => {
 
-      // console.log(this.getters.rssFeed)
-
-        // return getters.rssFeed.filter(
-        //   function(item) {
-        //     item.articleId == id;
-        //   }
-        // )[0]
-      // return '';
     },
     rssColorPalettes: function (state) {
       let colorResults = [];
-      state['trendingColors'].forEach(e => {
-        let result = e['content'].match(/[#]\b.{6}/g);
-        colorResults.push(result)
+      let feed = state.trendingColors.feed;
+      state.trendingColors['items'].forEach(e => {
+        let result = {};
+        // * add feed data to item, will be more useful when other palette sources are added
+        result.feed = feed;
+        // * result.open set for triggering Flipped animation
+        result.open = false;
+        // * make a hash for unique key
+        result.paletteId = stringHash(e.content);
+        // * extract palette colors from content 
+        result.colors = e['content'].match(/[#]\b.{6}/g);
+        // console.log(result)
+        colorResults.push(result);
       });
       return colorResults;
     }
   }
-  // plugins: [ pathify.plugin ], // activate plugin
-  // ...store
 });

@@ -21,7 +21,7 @@ export default {
     methods: {
         loginSuccess: function(){
             this.$store.dispatch('getRss')
-            this.$router.push('news');
+            this.$router.push('news/latest');
         }
     }
 };

@@ -4,6 +4,17 @@
     <v-container fluid grid-list-lg>
         <v-layout row wrap tag="main" class="photo-page">
             
+                       <v-btn
+              fixed
+              dark
+              fab
+              bottom
+              right
+              color="warning"
+            >
+              <v-icon>search</v-icon>
+            </v-btn>
+
             <v-flex row>
                 <v-form v-on:submit.prevent="submitSearch">
                     <v-text-field hide-details single-line required v-model="searchQuery" prepend-icon="search"
@@ -30,6 +41,19 @@
                 </v-card>
             </v-flex>
         </v-layout>
+                  <v-toolbar>
+            <v-btn icon class="hidden-xs-only">
+              <v-icon>arrow_back</v-icon>
+            </v-btn>
+
+            <v-toolbar-title>Title</v-toolbar-title>
+
+            <v-spacer></v-spacer>
+
+            <v-btn icon class="hidden-xs-only">
+              <v-icon>search</v-icon>
+            </v-btn>
+          </v-toolbar>
     </v-container>
 </template>
 <script>
@@ -66,6 +90,9 @@ export default {
     .photo-page {
         article {
             // background-color: $dust;
+        }
+        .v-btn--floating {
+            margin-bottom: 4rem;
         }
     }
     .v-card__actions {

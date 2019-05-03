@@ -2,11 +2,12 @@
     <v-container fluid grid-list-lg>
         <v-layout v-if="!loading" fill-height row wrap>
             <v-flex xs12>
-                <Flipped v-for="(item, index) in orderedRss" v-bind:key="item.articleId" :flipId="item.articleId" stagger="article">
+                <Flipped v-for="(item, index) in orderedRss" v-bind:key="item.articleId" :flipId="item.articleId+''" stagger="article">
                     <v-card tag="article" v-bind:class="{ 
                                 'has-image': item.img, 
                                 'has-feature-image': item.topImage 
                             }" class="elevation-10"
+                             @on-start="animateOut"
                             >
 
 
@@ -36,30 +37,27 @@
                             </v-card-title> -->
 
                             <!-- has featured-image / topImage -->
-                                        <Flipped :inverseFlipId="item.articleId" translate opacity stagger="article">
 
                             <v-img class="white--text feature-image" :src="item.img" v-if="item.topImage"></v-img>
-                                        </Flipped>
-                                <!-- <header> -->
-                                    <Flipped :flipId="`title-${item.articleId}`" translate stagger="article">
+                                    <Flipped :flipId="`title-${item.articleId}`" stagger="article">
 
                                         <h1>{{item.title}}</h1>
                                     </Flipped>
                                 <!-- </header> -->
 
                         </span>
-                        <Flipped :inverseFlipId="item.articleId">
+                        <!-- <Flipped :inverseFlipId="item.articleId"> -->
                             <v-card-text class="content-snippet">
                                 {{(item.description ? item.description : item.contentSnippet) | striphtml}}
                             </v-card-text>
-                        </Flipped>
+                        <!-- </Flipped> -->
 
                         <v-divider></v-divider>
 
 
                         <v-card-actions class="px-3 pb-2 caption">
-                            <Flipped :flipId="`source-${item.articleId}`" stagger="article">
-                                <img v-if="item.source.image" :src="item.source.image" :alt="item.source.title"
+                            <Flipped :flipId="`source-${item.articleId}`" stagger="article" v-if="item.source.image">
+                                <img :src="item.source.image" :alt="item.source.title"
                                     :width="item.source.image.width" :height="item.source.image.height" />
                             </Flipped>
                             <Flipped :flipId="`source-title-${item.articleId}`" stagger="article">
@@ -99,17 +97,20 @@ export default {
     },
     data: () => {
         return {
-            articleSelected: this.$store.state.selectedArticle
             // loading: false
             // loading: 
         }
     },
     methods: {
+        animateOut(el){
+            el.classList.add('animate-out');
+        },
         handleNavigate(id) {
+            let self = this
             id = parseInt(id)
             for (let i = 0; i < this.orderedRss.length; i++) {
                 if (this.orderedRss[i].articleId == id) {
-                    this.$store.state.selectedArticle = this.orderedRss[i];
+                    self.$store.state.selectedArticle = this.orderedRss[i];
                 }
             }            
             this.$router.push(`article/${id}`);
@@ -121,6 +122,9 @@ export default {
         }
     },
     computed: {
+        articleSelected() {
+            return this.$store.state.selectedArticle
+        },
         orderedRss() {
             return _.orderBy(this.rssFeed, 'unixTime').reverse()
         },
@@ -168,6 +172,13 @@ article.has-feature-image {
         max-height: 225px;
         border-top-left-radius: 1.5rem;
         border-top-right-radius: 1.5rem;
+    }
+
+    &.animate-out {
+        .feature-image {
+            opacity: 1;
+            transition: opacity 1s;
+        }
     }
 
     header {

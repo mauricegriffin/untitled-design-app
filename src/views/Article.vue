@@ -1,5 +1,5 @@
 <template>
-        <Flipped :flipId="theArticle.articleId" stagger="article">
+        <Flipped :flipId="theArticle.articleId" stagger="article" @on-start="handleStart">
 
   <v-container class="single-article-page" full-height>
                 <!-- <Flipped :inverseFlipId="theArticle.articleId"> -->
@@ -17,7 +17,7 @@
                 {{theArticle.title}}
               </h1>
             </Flipped>
-            <v-divider></v-divider>
+            <v-divider class="warning"></v-divider>
             <!-- <Flipped :flipId="`source-${theArticle.articleId}`">
           <img v-if="theArticle.source.image" :src="theArticle.source.image" :alt="theArticle.source.title"
               :width="theArticle.source.image.width" :height="theArticle.source.image.height" />
@@ -41,7 +41,7 @@
             </Flipped>
       <!-- </v-flex> -->
                 </section>
-                <v-divider class="mb-3"></v-divider>
+                <v-divider class="mb-3 warning"></v-divider>
 <!-- </v-flex>
             </v-layout> -->
             <transition name="fade">
@@ -84,6 +84,13 @@ export default {
     fadeOut({ el }) {
       console.log(el)
       // this.slidePanelLoaded = true;
+    },
+    
+    handleStart({ el, id }) {
+        // console.log("Started")
+        // setTimeout(() => {
+      el.classList.add("animated-in");
+        // }, 600);
     },
   },
   created: function() {
@@ -132,6 +139,9 @@ export default {
     }
   }
 .single-article__content {
+  // padding-top: 20em;
+  transform: translate3d(0, 20rem, 0);
+  opacity: 0;
   h1,h2,h3,h4 {
     margin-top: 0.5rem;
     margin-bottom: 1rem;
@@ -155,4 +165,12 @@ export default {
     }
   }
 }
+
+.animated-in {
+  .single-article__content {
+  transform: translate3d(0, 0, 0);
+
+  opacity: 1;
+  transition: opacity transform 1s;
+}}
 </style>
