@@ -2,75 +2,45 @@
     <v-container fluid grid-list-lg>
         <v-layout v-if="!loading" fill-height row wrap>
             <v-flex xs12>
-                <Flipped v-for="(item, index) in orderedRss" v-bind:key="item.articleId" :flipId="item.articleId+''" stagger="article">
+                <Flipped v-for="(item, index) in orderedRss" v-bind:key="(item.articleId).toString()" :flipId="(item.articleId).toString()" stagger="article" @on-start="animateOut">
                     <v-card tag="article" v-bind:class="{ 
                                 'has-image': item.img, 
                                 'has-feature-image': item.topImage 
-                            }" class="elevation-10"
-                             @on-start="animateOut"
-                            >
-
-
-                             <!-- v-for="(item, index) in orderedRss" v-bind:key="item.articleId" -->
-
-
-
-                            <!-- <Flipped :inverseFlipId="item.article"> -->
-                        <span @click="handleNavigate(item.articleId)">
-
-                            <!-- <v-layout v-if="item.img && !item.topImage">
-                                <v-card-title class="pb-0" tag="header">
-                                    <v-flex xs5 align-center row>
-                                        <v-img :src="item.img" contain max-width="125px" max-height="125px"
-                                            justify-center class="pb-0"></v-img>
-                                    </v-flex>
-                                    <v-flex xs7 align-end tag="header">
-                                        <h1>
-                                            {{item.title}}
-                                        </h1>
-                                    </v-flex>
-                                </v-card-title>
-                            </v-layout> -->
-                            <!-- has no image for article -->
-                            <!-- <v-card-title v-if="!item.img" class="darken-3 pb-0" tag="header">
-                                <h1>{{item.title}}</h1>
-                            </v-card-title> -->
-
-                            <!-- has featured-image / topImage -->
-
-                            <v-img class="white--text feature-image" :src="item.img" v-if="item.topImage"></v-img>
+                            }" class="elevation-10">
+                        <Flipped :inverseFlipId="(item.articleId).toString()">
+                            <span>
+                                <span @click="handleNavigate(item.articleId)">
+                                                            <!-- <Flipped :inverseFlipId="(item.articleId).toString()"> -->
+                                    <transition name="fade">
+                                    <v-img class="white--text feature-image" :src="item.img" v-if="item.topImage">
+                                    </v-img>
+                                    </transition>  <!-- </Flipped> -->
                                     <Flipped :flipId="`title-${item.articleId}`" stagger="article">
-
                                         <h1>{{item.title}}</h1>
                                     </Flipped>
-                                <!-- </header> -->
-
-                        </span>
-                        <!-- <Flipped :inverseFlipId="item.articleId"> -->
-                            <v-card-text class="content-snippet">
-                                {{(item.description ? item.description : item.contentSnippet) | striphtml}}
-                            </v-card-text>
-                        <!-- </Flipped> -->
-
-                        <v-divider></v-divider>
-
-
-                        <v-card-actions class="px-3 pb-2 caption">
-                            <Flipped :flipId="`source-${item.articleId}`" stagger="article" v-if="item.source.image">
-                                <img :src="item.source.image" :alt="item.source.title"
-                                    :width="item.source.image.width" :height="item.source.image.height" />
-                            </Flipped>
-                            <Flipped :flipId="`source-title-${item.articleId}`" stagger="article">
-                                <span class="source">
-                                    {{item.source.title}}&nbsp;
                                 </span>
-                            </Flipped>
-                            <v-spacer></v-spacer>
-                            <span class="time">
-                                {{item.postAge}}
+                                <v-card-text class="content-snippet">
+                                    {{(item.description ? item.description : item.contentSnippet) | striphtml}}
+                                </v-card-text>
+                                <v-divider></v-divider>
+                                <v-card-actions class="px-3 pb-2 caption">
+                                    <Flipped :flipId="`source-img-${item.articleId}`" stagger="article"
+                                        v-if="item.source.image">
+                                        <img :src="item.source.image" :alt="item.source.title"
+                                            :width="item.source.image.width" :height="item.source.image.height" />
+                                    </Flipped>
+                                    <Flipped :flipId="`source-title-${item.articleId}`" stagger="article">
+                                        <span class="source">
+                                            {{item.source.title}}&nbsp;
+                                        </span>
+                                    </Flipped>
+                                    <v-spacer></v-spacer>
+                                    <span class="time">
+                                        {{item.postAge}}
+                                    </span>
+                                </v-card-actions>
                             </span>
-                        </v-card-actions>
-                            <!-- </Flipped> -->
+                        </Flipped>
                     </v-card>
                 </Flipped>
             </v-flex>
@@ -87,13 +57,12 @@
 
 import Vuex from 'vuex';
 import _ from 'lodash';
-import { Flipper, Flipped } from "vue-flip-toolkit";
+import {Flipped} from "vue-flip-toolkit";
 
 export default {
     name: 'news',
     components: {
-        Flipped,
-        Flipper
+        Flipped
     },
     data: () => {
         return {
@@ -102,7 +71,8 @@ export default {
         }
     },
     methods: {
-        animateOut(el){
+        animateOut({el}){
+            // alert('animate-out')
             el.classList.add('animate-out');
         },
         handleNavigate(id) {
@@ -176,28 +146,16 @@ article.has-feature-image {
 
     &.animate-out {
         .feature-image {
-            opacity: 1;
-            transition: opacity 1s;
+            // opacity: 0;
+            // transition: opacity 1s;
         }
     }
 
     header {
         height: 100%;
         width: 100%;
-        // display: grid;
-        // grid-template-columns: 1fr;
-        // grid-template-rows: 1fr 1fr auto;
     }
-
     h1 {
-        // background:
-        //     linear-gradient(rgba(0, 0, 0, 0),
-        //     rgba(0, 0, 0, 0.30) 33%,
-        //     rgba(0, 0, 0, 0.45) 66%,
-        //     rgba(0, 0, 0, 0.60),
-        //     );
-        // grid-column: 1 / 1;
-        // grid-row: 3 / 4;
         padding: 1rem 1rem 0;
     }
 }

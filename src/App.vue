@@ -27,11 +27,14 @@
 
 
 
-    <v-toolbar class="primary darken-4" fixed scroll-off-screen v-if="!['home'].includes($route.name)" app>
+    <v-toolbar class="primary darken-4" fixed scroll-off-screen app
+    v-if="!['home','login','join'].includes($route.name)">
       <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer class="hidden-md-and-up"></v-spacer>
       <router-link to="/">
-        <v-toolbar-title to="/">{{this.$store.state.appTitle}}</v-toolbar-title>
+        <v-toolbar-title to="/">
+          {{this.$store.state.appTitle}}
+        </v-toolbar-title>
       </router-link>
       <v-btn flat class="hidden-sm-and-down" to="/news">News</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/photos">Photos</v-btn>
@@ -42,15 +45,12 @@
       <v-btn flat class="hidden-sm-and-down" to="/">Sign Out</v-btn>
     </v-toolbar>
     <v-content>
-      <!-- <v-container fluid> -->
         <router-view></router-view>
-      <!-- </v-container> -->
     </v-content>
 
     <v-footer fixed 
       v-if="!['home','login','join'].includes($route.name)"
       >
-
     <v-bottom-nav
       :value="true"
       absolute
@@ -87,23 +87,17 @@
       </v-btn>
     </v-bottom-nav>
     </v-footer>
-    <!-- <v-footer app></v-footer> -->
   </v-app>
 </template>
 
 <script>
-// import AppNavigation from "@/components/AppNavigation.vue";
 
 
 export default {
   name: 'App',
-  components: {
-    // AppNavigation,
-  },
   data () {
     return {
-        drawer: false
-        // bottomNav: this.$props.bottomNavShow
+        drawer: false,
     }
   }
 }

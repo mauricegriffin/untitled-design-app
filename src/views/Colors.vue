@@ -36,8 +36,9 @@
                         <Flipped 
                             v-else
                             @on-start="handleStart" 
-                            @on-complete="handleComplete"
                             :flipId="`palette-${index}`" stagger="card">
+                            <!-- ! @on-complete="handleComplete" -->
+
                             <v-card tag="article" class="palette-card palette-card-expanded elevation-10">
                                 <Flipped :inverseFlipId="`palette-${index}`">
                                     <span>
@@ -75,7 +76,7 @@
 <script>
 
 // import mapState from 'vuex';
-import Vuex from 'vuex';
+// import Vuex from 'vuex';
 import { Flipper, Flipped } from "vue-flip-toolkit";
 
 // import _ from 'lodash';
@@ -92,16 +93,15 @@ export default {
         }
     },
     methods: {
-        handleStart({ el, id }) {
+        handleStart(e) {
             // console.log("Started")
             // setTimeout(() => {
-                el.classList.add("animated-in");
+                e.classList.add("animated-in");
             // }, 600);
         },
-        handleComplete({ el, id }) {
-            // console.log("Finished");
-            console.log(el, id)
-        },
+        // handleComplete({ el, id }) {
+        //     console.log(el, id)
+        // },
         shouldFlip(index) {
             return (prev, current) => {
                 // console.log(prev,current)

@@ -12,22 +12,52 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: Home
+      name: 'home',
+      component: Home,
+      // props: {
+      //   hideNav: 'purple',
+      //   hideTopNav: true,
+      //   hideBottomNav: true
+      // }
     },
     {
       path: '/about',
+      name: 'about',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      // props: {
+      //   default: {
+      //     hideNav: true,
+      //     hideTopNav: true,
+      //     hideBottomNav: true
+      //   }
+      // }
     },
     {
       path: '/login',
-      component: () => import(/* webpackChunkName: "login" */ './views/Login.vue')
+      name: 'login',
+      component: () => import(/* webpackChunkName: "login" */ './views/Login.vue'),
+      // props: {
+      //   default: {
+      //     hideNav: true,
+      //     hideTopNav: true,
+      //     hideBottomNav: true
+      //   }
+      // }
     },
     {
       path: '/join',
-      component: () => import(/* webpackChunkName: "login" */ './views/Join.vue')
+      name: 'join',
+      component: () => import(/* webpackChunkName: "login" */ './views/Join.vue'),
+      // props: {
+      //   default: {
+      //     hideNav: true,
+      //     hideTopNav: true,
+      //     hideBottomNav: true
+      //   }
+      // }
     },
     {
       path: '/news',

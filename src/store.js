@@ -121,7 +121,7 @@ export default new Vuex.Store({
 
         result.items.forEach(function (i) {
           i.source = feedSource;
-          i.articleId = stringHash(i.link);
+          i.articleId = (stringHash(i.link)).toString();
 
           let thumbnailUrl = i.thumbnail ? i.thumbnail : false;
 

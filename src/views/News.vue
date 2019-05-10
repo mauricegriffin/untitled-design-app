@@ -7,7 +7,7 @@
 </template>
 <script>
 
-import { Flipper, Flipped } from "vue-flip-toolkit";
+import {Flipper} from "vue-flip-toolkit";
 
 export default {
   components: {

@@ -69,10 +69,10 @@ export default {
   data: function() {
     return {
       colors: [],
-      imgUrl: 'https://unsplash.it/1900/1900/?random&featured',
-      bg1: true,
-      bg2: false,
-      switchingImg: false
+      // imgUrl: 'https://unsplash.it/1900/1900/?random&featured',
+      // bg1: true,
+      // bg2: false,
+      // switchingImg: false
     };
   },
   methods: {
@@ -116,6 +116,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
+.home-page {
+  // width: 100vw;
+  // height: 100vh;
+  // grid-column: 1 / -1;
+  // grid-row: 1 / -1;
+}
+
 .home-page {
 
   display: grid;
@@ -123,7 +132,9 @@ export default {
   grid-template-rows: 25vh 25vh 25vh 25vh;
 
   background: black url(http://unsplash.it/1900/1900/?random&featured);
-  background-size: 200%;
+  background-size: 300%;
+  background-repeat: no-repeat;
+  // max-height: 100vh;
   animation: panning 50s infinite linear;
   &:before {
     content: '';
@@ -174,8 +185,10 @@ $colorTransition: 3s ease;
 }
 
 .app-title {
-  margin-left: 1.3rem;
-  margin-top: 1.3rem;
+  // margin-left: 1.3rem;
+  // margin-top: 1.3rem;
+  // transform: ;
+
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row-start: 1;
@@ -195,7 +208,7 @@ $colorTransition: 3s ease;
   // left: 1rem;
   // top: 1.3rem;
   // height: 70%;
-  transform: scaleX(-1) scaleY(-1);
+  transform: scaleX(-1) scaleY(-1) translate3d(-1.3rem, -1.3rem, 0);
   writing-mode: vertical-rl;
 }
 
@@ -227,7 +240,8 @@ $colorTransition: 3s ease;
 }
 
 .home-btns {
-  margin: 1.3rem 1.3rem 0 0;
+  // margin: 1.3rem 1.3rem 0 0;
+  transform: translate3d(-1.3rem, 1.3rem, 0);
   grid-row-start: 1;
   grid-column-start: 5;
   text-align: right;
@@ -250,60 +264,18 @@ $colorTransition: 3s ease;
 @keyframes panning {
   0% {
     background-position: 0% 0%;
-    // transform: scale3d(1);
-
   }
-
   25% {
     background-position: 100% 100%;
-    // transform: scale3d(2);
-
   }
-
   50% {
     background-position: 100% 0%;
   }
-
   75% {
-    background-position: 0 100%;
+    background-position: 0% 100%;
   }
-
-  200% {
-    background-position: 0 0;
+  100% {
+    background-position: 0% 0%;
   }
-}
-
-
-
-
-.home-page {
-  width: 100vw;
-  height: 100vh;
-  grid-column: 1 / -1;
-  grid-row: 1 / -1;
-}
-
-.home-bg-img {
-  // transition: opacity .5s ease-in-out;
-  // transform: scale3d(2);
-  // // background-size: 200%;
-  // animation: panning 50s infinite linear;
-  // grid-column: 1 / -1;
-  // grid-row: 1 / -1;
-  // -webkit-filter: grayscale(1);
-  // -webkit-filter: grayscale(100%);
-  // -moz-filter: grayscale(100%);
-  // filter: gray;
-  // filter: grayscale(100%);
-  // filter: url(#dilate);
-  // filter: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' height='0'><filter id='greyscale'><feColorMatrix type='matrix' values='0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0' /></filter></svg>#greyscale");
-}
-
-.disappear {
-  // opacity: 0;
-}
-
-.color-bands {
-
 }
 </style>

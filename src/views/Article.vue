@@ -1,79 +1,64 @@
 <template>
-        <Flipped :flipId="theArticle.articleId" stagger="article" @on-start="handleStart">
-
   <v-container class="single-article-page" full-height>
-                <!-- <Flipped :inverseFlipId="theArticle.articleId"> -->
-
     <v-layout full-height>
       <v-flex full-height>
+        <Flipped :flipId="(theArticle.articleId).toString()" stagger="article" @on-start="handleStart">
           <main class="single-article">
-                        <Flipped :inverseFlipId="theArticle.articleId" translate="true">
+            <Flipped :inverseFlipId="(theArticle.articleId).toString()">
 
-            <v-img class="featured-image" :src="theArticle.img" cover v-if="!theArticle.thumbnailFromArticle"></v-img>
-                        </Flipped>
+              <span>
+                <a href="#" @click="goBack" class="accent--text">Back</a>
+              <v-img class="featured-image" :src="theArticle.img" cover v-if="!theArticle.thumbnailFromArticle"></v-img>
+              <Flipped :flipId="`title-${theArticle.articleId}`" stagger="article">
+                <h1 class="headline mb-3 mt-2">
+                  {{theArticle.title}}
+                </h1>
+              </Flipped>
+              <transition name="fade">
+              <v-divider class="warning"></v-divider>
+              </transition>
+              <section class="article-source py-2">
+                <Flipped :flipId="`source-img-${theArticle.articleId}`" stagger="article">
+                  <span>
+                    <img v-if="theArticle.source.image" :src="theArticle.source.image" :alt="theArticle.source.title" />
+                  </span>
+                </Flipped>
+                <Flipped :flipId="`source-title-${theArticle.articleId}`" :key="`source-title-${theArticle.articleId}`"
+                  translate stagger="article">
+                  <span>
+                    {{theArticle.source.title}} / {{postDate}}<template v-if="theArticle.author"> / by
+                      {{theArticle.author}}</template>
+                  </span>
+                </Flipped>
+              </section>
+              <transition name="fade">
 
-            <Flipped :flipId="`title-${theArticle.articleId}`" translate stagger="article">
-              <h1 class="headline mb-3 mt-2">
-                {{theArticle.title}}
-              </h1>
-            </Flipped>
-            <v-divider class="warning"></v-divider>
-            <!-- <Flipped :flipId="`source-${theArticle.articleId}`">
-          <img v-if="theArticle.source.image" :src="theArticle.source.image" :alt="theArticle.source.title"
-              :width="theArticle.source.image.width" :height="theArticle.source.image.height" />
-          <span class="source">
-              {{theArticle.source.title}}&nbsp;
-          </span>
-          </Flipped> -->
-          <!-- <v-layout> -->
-            <!-- <v-flex row align-baseline class="source"> -->
-                <section class="article-source py-2">
-      <!-- <v-flex xs12> -->
-            <Flipped :flipId="`source-img-${theArticle.articleId}`" stagger="article">
-              <span>
-              <img v-if="theArticle.source.image" :src="theArticle.source.image" :alt="theArticle.source.title"/>
-            </span>
-            </Flipped>
-            <Flipped :flipId="`source-title-${theArticle.articleId}`" :key="`source-title-${theArticle.articleId}`" translate stagger="article">
-              <span>
-                {{theArticle.source.title}} / {{postDate}}<template v-if="theArticle.author"> / by {{theArticle.author}}</template>
+                <v-divider class="mb-3 warning"></v-divider>
+              </transition>
+              <transition name="fade">
+                <article class="single-article__content" v-html="theArticle.content"></article>
+              </transition>
+              <v-btn :href="theArticle.link" target="_blank" color="accent" round class="black--text">
+                Read Original
+              </v-btn>
               </span>
             </Flipped>
-      <!-- </v-flex> -->
-                </section>
-                <v-divider class="mb-3 warning"></v-divider>
-<!-- </v-flex>
-            </v-layout> -->
-            <transition name="fade">
-                                    <!-- <Flipped :inverseFlipId="theArticle.articleId"> -->
-            <article class="single-article__content" v-html="theArticle.content"></article>
-                                      </transition>
-                                    <!-- </Flipped> -->
-            <!-- </transition> -->
-            <v-btn :href="theArticle.link" target="_blank" color="accent" round class="black--text">
-             Read Original
-            </v-btn>
-            <!-- <h6>{{theArticle.source.title}}</h6> -->
           </main>
+        </Flipped>
       </v-flex>
     </v-layout>
-                <!-- </Flipped> -->
-
   </v-container>
-        </Flipped>
-
 </template>
 
 <script>
 
-import { Flipper, Flipped } from "vue-flip-toolkit";
+import {Flipped} from "vue-flip-toolkit";
 import moment from 'moment';
 
 export default {
   name: 'singleArticle',
   components: {
-    Flipped,
-    Flipper
+    Flipped
   },
   data: function() {
     return {
@@ -81,6 +66,9 @@ export default {
     };
   },
   methods: {
+    goBack() {
+      this.$router.back();
+    },
     fadeOut({ el }) {
       console.log(el)
       // this.slidePanelLoaded = true;
